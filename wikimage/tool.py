@@ -7,6 +7,10 @@ import os
 Design ideas/notes:
     [editor agent] -> archytas agent
       - have a context that it can add sections to
+      - alternatively:
+          ---> keep track of all pages the agent views
+          ---> any time a page is viewed, elide any previously viewed pages in the chat history
+          ---> OR see if we can get in on openai caching of chat history since they get long
       - find relevant sections. selected sections go into the context
           ---> sections are identified by the filename/section name so the agent can make links
       - manage the context (e.g. mark sections as done)
