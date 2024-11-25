@@ -1,0 +1,11 @@
+# auto env scripts
+.autoenv
+.autoleave
+
+
+# python
+__pycache__/
+
+
+# random files to ignore
+notes.txt

@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "wikimage"
+version = "0.1.0"
+description = "AI assistant to automatically create and manage a wiki"
+authors = ["David Samson <david.andrew.engineer@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+archytas = "^1.2.3"
+easyrepl = "^0.1.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
