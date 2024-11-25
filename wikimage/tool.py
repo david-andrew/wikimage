@@ -17,6 +17,16 @@ Design ideas/notes:
     [bulk management]
     - create a new wiki (done by the user)
 
+
+
+Test ideas:
+- use existing wikis
+    - one piece
+    - lotgh
+    - wikipedia (ultimate stress test )
+- dat/mann work
+- dogfood with jataware/slack
+
 """
 # TODO: later set up with git and remote, and add gh-action for building wiki
 def new_wiki(name: str):
@@ -73,6 +83,7 @@ class WikiManager:
     - edits are specified with line numbers. start is inclusive, end is exclusive (like a python slice)
     - to insert without deleting, make an edit where start=end
     - to delete without inserting, make an edit where content=""
+    - when making edits, you should always view the page first to see the current content
     """
 
     # @tool
@@ -139,17 +150,18 @@ class WikiManager:
         
         file.write_text("\n".join(lines))
 
+
     @staticmethod
     @tool
-    def list_pages() -> str:
+    def list_pages() -> list[str]:
         """
         Display a list of all pages in the wiki
 
         Returns:
-            str: a list of all pages in the wiki
+            list[str]: a list of all pages in the wiki
         """
-        return "\n".join(sorted([page.stem for page in Path(".").glob("*.md")]))
-    
+        return sorted([page.stem for page in Path(".").glob("*.md")])
+ 
     @staticmethod
     @tool
     def view_page(name: str) -> str:
@@ -169,7 +181,7 @@ class WikiManager:
         # return the text with line numbers prepended to each line
         lines = file.read_text().split("\n")
         num_digits = len(str(len(lines)))
-        numbered_lines = [f"{str(i).rjust(num_digits)}: {line}" for i, line in enumerate(lines, 1)]
+        numbered_lines = [f"{str(i).rjust(num_digits)}: {line}" for i, line in enumerate(lines)]
         return "\n".join(numbered_lines)
     
     @staticmethod
