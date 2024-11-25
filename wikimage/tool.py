@@ -80,11 +80,13 @@ class WikiManager:
     General notes to keep in mind:
     - all wiki content should be valid markdown
     - use [[Page Name]] to link to other pages
+    - page names may not include slashes 
     - edits are specified with line numbers. start is inclusive, end is exclusive (like a python slice)
     - to insert without deleting, make an edit where start=end
     - to delete without inserting, make an edit where content=""
     - when making edits, you should always view the page first to see the current content
     """
+    # TODO: actually want to support slashes in titles... but means filename doesn't match title... perhaps title should be set at the top of the page markdown via metadata..
 
     # @tool
     # """maybe have an inner agent that checks each based on e.g. RAG compare or just looking at each whole page. prompt to call this tool: 'please describe broadly what kind of information you wish to modify in the wiki'"""
@@ -104,6 +106,21 @@ class WikiManager:
         if file.exists():
             raise FileExistsError(f"Page '{name}' already exists. Please choose a different name, or use the edit tool.")
         file.write_text(content)
+    
+    @staticmethod
+    @tool
+    def delete_page(name: str):
+        """
+        Delete a wiki page
+
+        Args:
+            name (str): the name of the page to delete
+        """
+        file = Path(name).with_suffix(".md")
+        if not file.exists():
+            raise FileNotFoundError(f"Page '{name}' does not exist. Please create the page before deleting it.")
+        file.unlink()
+
     
     # TODO: swap this in if Edits is not working very well with the agent
     # @tool
