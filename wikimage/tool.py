@@ -61,18 +61,25 @@ class Edit:
 #     end: int
 
 
-AGENT_NOTES = """\
-- all wiki content should be valid markdown
-- use [[Page Name]] to link to other pages
-- edits use line numbers. start is incluse, end is exclusive
-- to insert without deleting, set start=end
-- to delete without inserting, set content=""
-"""
+# AGENT_NOTES = 
 
 class WikiManager:
+    """
+    A set of tools for managing a wiki.
+    
+    General notes to keep in mind:
+    - all wiki content should be valid markdown
+    - use [[Page Name]] to link to other pages
+    - edits are specified with line numbers. start is inclusive, end is exclusive (like a python slice)
+    - to insert without deleting, make an edit where start=end
+    - to delete without inserting, make an edit where content=""
+    """
+
+    # @tool
     # """maybe have an inner agent that checks each based on e.g. RAG compare or just looking at each whole page. prompt to call this tool: 'please describe broadly what kind of information you wish to modify in the wiki'"""
     # def find_relevant_sections(content: str): ...
 
+    @staticmethod
     @tool
     def create_new_page(name: str, content: str):
         """
@@ -99,6 +106,7 @@ class WikiManager:
     #         deletes (list[Delete]): a list of deletions to make to the page
     #     """
 
+    @staticmethod
     @tool
     def edit_page(name: str, edits: list[Edit]):
         """
@@ -131,6 +139,7 @@ class WikiManager:
         
         file.write_text("\n".join(lines))
 
+    @staticmethod
     @tool
     def list_pages() -> str:
         """
@@ -141,6 +150,7 @@ class WikiManager:
         """
         return "\n".join(sorted([page.stem for page in Path(".").glob("*.md")]))
     
+    @staticmethod
     @tool
     def view_page(name: str) -> str:
         """
@@ -162,6 +172,7 @@ class WikiManager:
         numbered_lines = [f"{str(i).rjust(num_digits)}: {line}" for i, line in enumerate(lines, 1)]
         return "\n".join(numbered_lines)
     
+    @staticmethod
     @tool
     def get_outgoing_links(name: str) -> list[str]:
         """
@@ -206,6 +217,7 @@ class WikiManager:
         return links
     
 
+    @staticmethod
     @tool
     def get_incoming_links(name: str) -> list[str]:
         """
