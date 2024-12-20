@@ -3,6 +3,19 @@ from dataclasses import dataclass
 from pathlib import Path
 import os
 
+
+# Consider using claude/anthropic for this!
+"""
+Behavioral issues:
+- try not to duplicate too much. instead of duplication, you should have a primary source, and link to the primary content/sections from other pages
+- most edits should be verbatim or very close to it unless the user specifies it should be reworded.
+   - exceptions include if splitting something out into sections, you can slightly reword the beginning/end if it makes the sections flow into each other
+- do not make big assumptions about what the user wants. Collect information first to understand the full picture, and then ask for clarification on possible ambiguities
+   - generally you should dialog a bit with the user (while also collecting information at the same time) to build up a picture of what they actually want
+"""
+
+
+
 """
 Design ideas/notes:
     [editor agent] -> archytas agent
@@ -185,7 +198,7 @@ class WikiManager:
         
         file.write_text("\n".join(lines))
 
-        return file.read_text()
+        return WikiManager.view_page(name)
 
 
     @staticmethod
@@ -212,7 +225,7 @@ class WikiManager:
             str: the content of the page
         """
         file = WikiManager.get_page_path_by_name(name)
-        
+
         # return the text with line numbers prepended to each line
         lines = file.read_text().split("\n")
         num_digits = len(str(len(lines)))
