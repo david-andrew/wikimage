@@ -12,6 +12,8 @@ Behavioral issues:
    - exceptions include if splitting something out into sections, you can slightly reword the beginning/end if it makes the sections flow into each other
 - do not make big assumptions about what the user wants. Collect information first to understand the full picture, and then ask for clarification on possible ambiguities
    - generally you should dialog a bit with the user (while also collecting information at the same time) to build up a picture of what they actually want
+   - spend time building up context before deciding on what exactly to modify. e.g. read the content of possibly relevant pages
+   # perhaps the agent could have a scratch pad it fills up with info before it makes edits
 """
 
 
