@@ -102,7 +102,17 @@ class WikiManager:
     # def find_relevant_sections(content: str): ...
 
     @staticmethod
+    def get_page_path_by_name(name: str) -> Path:
+        # search the whole tree for {name}.md
+        for page in Path(".").glob("**/*.md"):
+            if page.stem == name:
+                return page
+        raise FileNotFoundError(f"Page '{name}' does not exist. Please create the page before editing it.")
+
+    
+    @staticmethod
     @tool
+    # TODO: allow the agent to put files into specific folders
     def create_new_page(name: str, content: str):
         """
         Create a new wiki page with the given content
@@ -125,9 +135,7 @@ class WikiManager:
         Args:
             name (str): the name of the page to delete
         """
-        file = Path(name).with_suffix(".md")
-        if not file.exists():
-            raise FileNotFoundError(f"Page '{name}' does not exist. Please create the page before deleting it.")
+        file = WikiManager.get_page_path_by_name(name)
         file.unlink()
 
     
@@ -156,9 +164,7 @@ class WikiManager:
         Returns:
             str: a copy of the page after the edits have been made
         """
-        file = Path(name).with_suffix(".md")
-        if not file.exists():
-            raise FileNotFoundError(f"Page '{name}' does not exist. Please create the page before editing it.")
+        file = WikiManager.get_page_path_by_name(name)
         content = file.read_text()
         lines = content.split("\n")
 
@@ -191,7 +197,7 @@ class WikiManager:
         Returns:
             list[str]: a list of all pages in the wiki
         """
-        return sorted([page.stem for page in Path(".").glob("*.md")])
+        return sorted([page.stem for page in Path(".").glob("**/*.md")])
  
     @staticmethod
     @tool
@@ -205,9 +211,7 @@ class WikiManager:
         Returns:
             str: the content of the page
         """
-        file = Path(name).with_suffix(".md")
-        if not file.exists():
-            raise FileNotFoundError(f"Page '{name}' does not exist. Please create the page before viewing it.")
+        file = WikiManager.get_page_path_by_name(name)
         
         # return the text with line numbers prepended to each line
         lines = file.read_text().split("\n")
@@ -215,69 +219,69 @@ class WikiManager:
         numbered_lines = [f"{str(i).rjust(num_digits)}: {line}" for i, line in enumerate(lines)]
         return "\n".join(numbered_lines)
     
-    @staticmethod
-    @tool
-    def get_outgoing_links(name: str) -> list[str]:
-        """
-        Get a list of all pages that the given page links to
+    # @staticmethod
+    # @tool
+    # def get_outgoing_links(name: str) -> list[str]:
+    #     """
+    #     Get a list of all pages that the given page links to
 
-        Args:
-            name (str): the name of the page to get links from
+    #     Args:
+    #         name (str): the name of the page to get links from
 
-        Returns:
-            list[str]: a set of all pages that are linked to in the given page
-        """
-        file = Path(name).with_suffix(".md")
-        if not file.exists():
-            raise FileNotFoundError(f"Page '{name}' does not exist. Please create the page before getting links from it.")
+    #     Returns:
+    #         list[str]: a set of all pages that are linked to in the given page
+    #     """
+    #     file = Path(name).with_suffix(".md")
+    #     if not file.exists():
+    #         raise FileNotFoundError(f"Page '{name}' does not exist. Please create the page before getting links from it.")
         
-        # find all links in the file. could use regex, but this is safer and simpler
-        links = set()
-        text = file.read_text()
-        start = 0
-        while True:
-            # find the next link
-            start = text.find("[[", start)
-            if start == -1:
-                break
-            end = text.find("]]", start)
-            if end == -1:
-                break
-            link = text[start + 2:end]
-            start = end + 2
+    #     # find all links in the file. could use regex, but this is safer and simpler
+    #     links = set()
+    #     text = file.read_text()
+    #     start = 0
+    #     while True:
+    #         # find the next link
+    #         start = text.find("[[", start)
+    #         if start == -1:
+    #             break
+    #         end = text.find("]]", start)
+    #         if end == -1:
+    #             break
+    #         link = text[start + 2:end]
+    #         start = end + 2
 
-            # Filter out invalid links
-            if '\n' in link:
-                print(f"Warning: page '{name}' contains a link that spans multiple lines: {link}")
-                continue
-            if not Path(f"{link}.md").exists():
-                print(f"Warning: page '{name}' contains a link to a non-existent page: {link}")
-                continue
+    #         # Filter out invalid links
+    #         if '\n' in link:
+    #             print(f"Warning: page '{name}' contains a link that spans multiple lines: {link}")
+    #             continue
+    #         if not Path(f"{link}.md").exists():
+    #             print(f"Warning: page '{name}' contains a link to a non-existent page: {link}")
+    #             continue
             
-            # add the link to the set
-            links.add(link)
+    #         # add the link to the set
+    #         links.add(link)
 
-        return links
+    #     return links
     
 
-    @staticmethod
-    @tool
-    def get_incoming_links(name: str) -> list[str]:
-        """
-        Get a list of all pages that link to the given page
+    # @staticmethod
+    # @tool
+    # def get_incoming_links(name: str) -> list[str]:
+    #     """
+    #     Get a list of all pages that link to the given page
 
-        Args:
-            name (str): the name of the page to get incoming links to
+    #     Args:
+    #         name (str): the name of the page to get incoming links to
 
-        Returns:
-            list[str]: a set of all pages that link to the given page
-        """
-        incoming_links = set()
-        for page in Path(".").glob("*.md"):
-            text = page.read_text()
-            if f"[[{name}]]" in text:
-                incoming_links.add(page.stem)
-        return incoming_links
+    #     Returns:
+    #         list[str]: a set of all pages that link to the given page
+    #     """
+    #     incoming_links = set()
+    #     for page in Path(".").glob("*.md"):
+    #         text = page.read_text()
+    #         if f"[[{name}]]" in text:
+    #             incoming_links.add(page.stem)
+    #     return incoming_links
 
 
 
