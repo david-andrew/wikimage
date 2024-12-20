@@ -55,6 +55,11 @@ def wiki_init():
     (root / ".gitignore").write_text("# wikimage identifier\n.wikimage\n")
 
 
+
+"""
+markdown.extensions.fenced_code
+markdown.extensions.tables
+"""
     
 
 
@@ -140,13 +145,16 @@ class WikiManager:
 
     @staticmethod
     @tool
-    def edit_page(name: str, edits: list[Edit]):
+    def edit_page(name: str, edits: list[Edit]) -> str:
         """
         Edit a wiki page
 
         Args:
             name (str): the name of the page to edit
             edits (list[Edit]): a list of edits to make to the page.
+
+        Returns:
+            str: a copy of the page after the edits have been made
         """
         file = Path(name).with_suffix(".md")
         if not file.exists():
@@ -170,6 +178,8 @@ class WikiManager:
             lines[edit.start:edit.end] = [edit.content]
         
         file.write_text("\n".join(lines))
+
+        return file.read_text()
 
 
     @staticmethod

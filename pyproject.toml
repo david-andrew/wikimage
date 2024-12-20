@@ -11,6 +11,9 @@ archytas = "^1.2.3"
 easyrepl = "^0.1.5"
 
 
+[tool.poetry.group.dev.dependencies]
+markdown = "^3.7"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
